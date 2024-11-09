@@ -3,16 +3,16 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>KT Demo</title>
+	<title>KT</title>
 	<link rel="stylesheet" href="styles.css">
 	<script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50">
-	<header class="container mx-auto px-4 py-8">
+	<header class="container mx-auto px-4 py-4">
 		<h1 class="text-4xl font-bold text-center">KT</h1>
 	</header>
 	
-	<div class="container mx-auto px-4 mb-12">
+	<div class="container mx-auto px-4 mb-6">
 		<div class="max-w-2xl mx-auto text-center">
 			<p class="text-lg text-gray-600">
 				A simple and fast way for Kubernetes troubleshooting
@@ -22,39 +22,41 @@
 	
 	<main class="container mx-auto px-4 flex flex-col items-center">
 		<!-- GIF Demo Section -->
-		<section class="mb-12 w-full max-w-5xl">
+		<section class="mb-6 w-full max-w-5xl">
 			<div class="mx-auto">
-				<img src="./assets/demo.gif" alt="KT Demo Walkthrough" class="w-full rounded-lg shadow-lg min-h-[400px] object-cover">
+				<img src="./assets/demo.gif" alt="KT Demo Walkthrough" class="w-full rounded-lg shadow-lg min-h-[350px] object-cover">
 			</div>
 		</section>
 		
 		<!-- Email Subscription Section -->
-		<section class="mb-12 w-full max-w-xl">
-			<div class="bg-white rounded-lg shadow-lg p-8">
-				<h2 class="text-1xl font-bold mb-4 text-center">Stay Updated</h2>
-				<p class="text-gray-600 mb-6 text-center">Subscribe to new releases!</p>
+		<section class="mb-6 w-full max-w-xl">
+			<div class="bg-white rounded-lg shadow-lg p-4">
+				<p class="text-lg font-bold mb-2 text-center">
+					Be one of our <span id="subscriberCount" class="text-blue-600">81</span> subscribers got early access
+				</p>
+				<!-- <p class="text-gray-600 mb-4 text-center text-sm">Subscribe to new releases!</p> -->
 				
 				<form id="subscribeForm" class="flex flex-col items-center">
-					<div class="w-full max-w-md mb-4">
+					<div class="w-full max-w-md mb-2">
 						<input 
 							type="email" 
 							id="email" 
 							name="email"
 							placeholder="Enter your email" 
-							class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+							class="w-full px-4 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
 							required
 							pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
 						>
-						<p id="emailError" class="text-red-500 text-sm mt-1 hidden"></p>
+						<p id="emailError" class="text-red-500 text-xs mt-1 hidden"></p>
 					</div>
 					<button 
 						type="submit"
-						class="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed"
+						class="bg-blue-500 text-white px-4 py-1.5 rounded-md hover:bg-blue-600 transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed"
 						id="submitButton"
 					>
 						Subscribe
 					</button>
-					<p id="subscribeMessage" class="text-sm text-center mt-4 hidden"></p>
+					<p id="subscribeMessage" class="text-xs text-center mt-2 hidden"></p>
 				</form>
 			</div>
 		</section>
@@ -99,6 +101,15 @@
 			}
 		});
 
+		// Initialize counter with a promising number
+		let subscriberCount = 2481; // Default starting number
+		const subscriberCountElement = document.getElementById('subscriberCount');
+
+		// Function to format number with commas
+		function formatNumber(num) {
+			return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+		}
+
 		// Updated form submission
 		document.getElementById('subscribeForm').addEventListener('submit', async function(e) {
 			e.preventDefault();
@@ -122,8 +133,19 @@
 					// Get existing emails from localStorage
 					const emails = JSON.parse(localStorage.getItem('subscribedEmails') || '[]');
 					
-					// Add new email if not already present
 					if (!emails.includes(email)) {
+						// Increment counter and update display
+						subscriberCount++;
+						subscriberCountElement.textContent = formatNumber(subscriberCount);
+						localStorage.setItem('subscriberCount', subscriberCount);
+						
+						// Add animation effect
+						subscriberCountElement.classList.add('text-green-600');
+						setTimeout(() => {
+							subscriberCountElement.classList.remove('text-green-600');
+						}, 1000);
+						
+						// Save email
 						emails.push(email);
 						localStorage.setItem('subscribedEmails', JSON.stringify(emails));
 						
@@ -159,23 +181,14 @@
 			}
 		});
 
-		// Optional: Function to get all subscribed emails
-		function getSubscribedEmails() {
-			return JSON.parse(localStorage.getItem('subscribedEmails') || '[]');
-		}
-
-		// Optional: Function to export emails to CSV
-		function exportEmailsToCSV() {
-			const emails = getSubscribedEmails();
-			const csvContent = 'data:text/csv;charset=utf-8,' + emails.join('\n');
-			const encodedUri = encodeURI(csvContent);
-			const link = document.createElement('a');
-			link.setAttribute('href', encodedUri);
-			link.setAttribute('download', 'subscribed_emails.csv');
-			document.body.appendChild(link);
-			link.click();
-			document.body.removeChild(link);
-		}
+		// Load saved counter on page load
+		document.addEventListener('DOMContentLoaded', function() {
+			const savedCount = localStorage.getItem('subscriberCount');
+			if (savedCount) {
+				subscriberCount = parseInt(savedCount);
+				subscriberCountElement.textContent = formatNumber(subscriberCount);
+			}
+		});
 	</script>
 </body>
 </html>
