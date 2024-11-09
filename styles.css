@@ -1,0 +1,12 @@
+/* Add any additional custom styles here */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.demo-section img {
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+  display: block;
+}
