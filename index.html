@@ -22,9 +22,13 @@
 	
 	<main class="container mx-auto px-4 flex flex-col items-center">
 		<!-- GIF Demo Section -->
-		<section class="mb-6 w-full max-w-5xl">
-			<div class="mx-auto">
-				<img src="./assets/demo.gif" alt="KT Demo Walkthrough" class="w-full rounded-lg shadow-lg min-h-[350px] object-cover">
+		<section class="mb-6 w-full max-w-6xl flex justify-center items-center">
+			<div class="mx-auto w-[800px]">
+				<img
+					src="./assets/demo.gif"
+					alt="KT Demo Walkthrough"
+					class="w-full rounded-lg shadow-lg"
+				>
 			</div>
 		</section>
 		
@@ -32,7 +36,7 @@
 		<section class="mb-6 w-full max-w-xl">
 			<div class="bg-white rounded-lg shadow-lg p-4">
 				<p class="text-lg font-bold mb-2 text-center">
-					Be one of our <span id="subscriberCount" class="text-blue-600">81</span> subscribers got early access
+					Be one of <span id="subscriberCount" class="text-blue-600">81</span> subscribers got early access for free
 				</p>
 				<!-- <p class="text-gray-600 mb-4 text-center text-sm">Subscribe to new releases!</p> -->
 				
@@ -102,7 +106,7 @@
 		});
 
 		// Initialize counter with a promising number
-		let subscriberCount = 2481; // Default starting number
+		let subscriberCount = 81; // Default starting number
 		const subscriberCountElement = document.getElementById('subscriberCount');
 
 		// Function to format number with commas
@@ -183,11 +187,16 @@
 
 		// Load saved counter on page load
 		document.addEventListener('DOMContentLoaded', function() {
+			// Get saved count or use default
 			const savedCount = localStorage.getItem('subscriberCount');
 			if (savedCount) {
 				subscriberCount = parseInt(savedCount);
-				subscriberCountElement.textContent = formatNumber(subscriberCount);
+			} else {
+				// If no saved count, set initial count
+				localStorage.setItem('subscriberCount', subscriberCount);
 			}
+			// Update display
+			subscriberCountElement.textContent = formatNumber(subscriberCount);
 		});
 	</script>
 </body>
