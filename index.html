@@ -38,6 +38,112 @@
 			</video>
 		</div>
 	</section> -->
+
+	<!-- Email Subscription Section -->
+	<section class="mb-12">
+		<div class="max-w-3xl mx-auto bg-white rounded-lg shadow-lg p-8">
+			<h2 class="text-2xl font-bold mb-4 text-center">Stay Updated</h2>
+			<p class="text-gray-600 mb-6 text-center">Subscribe to new releases!</p>
+			
+			<form id="subscribeForm" class="max-w-xl mx-auto">
+				<div class="flex flex-col sm:flex-row gap-4">
+					<div class="flex-1">
+						<input 
+							type="email" 
+							id="email" 
+							placeholder="Enter your email" 
+							class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+							required
+							pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+						>
+						<p id="emailError" class="text-red-500 text-sm mt-1 hidden"></p>
+					</div>
+					<button 
+						type="submit"
+						class="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed"
+						id="submitButton"
+					>
+						Subscribe
+					</button>
+				</div>
+				<p id="subscribeMessage" class="text-sm text-center mt-4 hidden"></p>
+			</form>
+		</div>
+	</section>
 </main>
+
+<script>
+	const emailInput = document.getElementById('email');
+	const emailError = document.getElementById('emailError');
+	const submitButton = document.getElementById('submitButton');
+	const subscribeMessage = document.getElementById('subscribeMessage');
+
+	function validateEmail(email) {
+		// Regular expression for email validation
+		const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+		return emailRegex.test(email);
+	}
+
+	function showError(message) {
+		emailError.textContent = message;
+		emailError.classList.remove('hidden');
+		emailInput.classList.add('border-red-500');
+	}
+
+	function clearError() {
+		emailError.classList.add('hidden');
+		emailInput.classList.remove('border-red-500');
+	}
+
+	// Real-time validation
+	emailInput.addEventListener('input', function(e) {
+		const email = e.target.value.trim();
+		
+		if (email === '') {
+			showError('Email is required');
+			submitButton.disabled = true;
+		} else if (!validateEmail(email)) {
+			showError('Please enter a valid email address');
+			submitButton.disabled = true;
+		} else {
+			clearError();
+			submitButton.disabled = false;
+		}
+	});
+
+	// Form submission
+	document.getElementById('subscribeForm').addEventListener('submit', function(e) {
+		e.preventDefault();
+		
+		const email = emailInput.value.trim();
+		
+		// Get existing emails
+		const emails = JSON.parse(localStorage.getItem('subscribedEmails') || '[]');
+		
+		// Add new email
+		if (!emails.includes(email)) {
+			emails.push(email);
+			localStorage.setItem('subscribedEmails', JSON.stringify(emails));
+			
+			// Success message
+			subscribeMessage.textContent = 'Thanks for subscribing!';
+			subscribeMessage.classList.remove('hidden', 'text-red-500');
+			subscribeMessage.classList.add('text-green-500');
+		} else {
+			// Already subscribed message
+			subscribeMessage.textContent = 'This email is already subscribed!';
+			subscribeMessage.classList.remove('hidden', 'text-green-500');
+			subscribeMessage.classList.add('text-red-500');
+		}
+		
+		// Clear input
+		emailInput.value = '';
+		
+		// Hide message after 5 seconds
+		setTimeout(() => {
+			subscribeMessage.classList.add('hidden');
+		}, 5000);
+	});
+</script>
 </body>
 </html>
